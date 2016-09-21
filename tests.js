@@ -22,12 +22,12 @@ QUnit.test( "Shared instance is initialized", function( assert ) {
   assert.ok(Epic.initShared("") == null);
   assert.ok(Epic.initShared(324,242) == null);
   assert.ok(Epic.initShared("aaa.scom",242) == null);
-  
   assert.ok(Epic.shared() == null);
+  
   var instance = Epic.initShared(url,key);
   assert.ok(instance);
   assert.ok(Epic.shared())
-  assert.ok(Epic.shared()==instance);
+  assert.ok(Epic._shared ==instance);
   assert.ok(Epic.shared()._url == url);
   assert.ok(Epic.shared()._key == key);
 });

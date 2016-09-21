@@ -109,24 +109,6 @@ var Epic = {
     },
     
     /**
-    * Initialize shared instance 
-    *
-    * @constructor
-    * @param {String} url
-    * @param {String} key
-    * @return {Object} Instance
-    **/
-    initShared: function(url, key){
-      if(!url || !key || !this._validateUrl(url) || typeof key != 'string'){
-        return null;
-      }
-      this._lib._url = url;
-      this._lib._key = key;
-      this._shared = this._lib;
-      return this._shared
-    },
-    
-    /**
     * Get shared instance
     *
     * @return {Object} Instance

@@ -60,3 +60,6 @@ var properties = {
 }
 tracker.register(properties);
 ```
+## Copyright & License
+ 
+Project released under the [MIT license](LICENSE.md)

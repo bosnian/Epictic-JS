@@ -14,6 +14,7 @@ QUnit.test( "Instance is returned if parameters are passed", function( assert ) 
   assert.ok(Epic.shared()==null);
   assert.ok(instance._url == url);
   assert.ok(instance._key == key);
+  assert.ok(instance._identifier);
 });
 
 QUnit.test( "Shared instance is initialized", function( assert ) {
@@ -30,6 +31,35 @@ QUnit.test( "Shared instance is initialized", function( assert ) {
   assert.ok(Epic._shared ==instance);
   assert.ok(Epic.shared()._url == url);
   assert.ok(Epic.shared()._key == key);
+  assert.ok(Epic.shared()._identifier);
+});
+
+QUnit.test( "Identify function is setting identifier", function( assert ) {
+
+  localStorage.removeItem('epictic-user-identifier');
+  var instance = Epic.init(url,key);
+  assert.ok(instance);
+  assert.ok(instance._identifier);
+  var email = "test@test.com";
+  instance.identify(email);
+  assert.ok(instance._identifier == email);
+  assert.ok(localStorage.getItem('epictic-user-identifier') == email);
+  localStorage.removeItem('epictic-user-identifier');
+});
+
+QUnit.test( "GUID is retrieved properly", function( assert ) {
+  localStorage.removeItem('epictic-user-identifier');
+  var instance = Epic.init(url,key);
+  assert.ok(instance);
+  assert.ok(instance._generateGUID());
+  assert.ok(instance._generateGUID().length == 36);
+  assert.ok(instance._generateGUID() != instance._generateGUID());
+  assert.ok(instance._random4Characters());
+  assert.ok(instance._random4Characters().length == 4);
+  assert.ok(instance._random4Characters().length != instance._random4Characters());
+  assert.ok(instance._getGUID().length > 5);
+  assert.ok(localStorage.getItem('epictic-user-identifier'));
+  assert.ok(instance._getGUID() == localStorage.getItem('epictic-user-identifier'));
 });
 
 QUnit.test( "Reset function is clearing instance", function( assert ) {
@@ -47,6 +77,7 @@ QUnit.test( "Reset function is clearing instance", function( assert ) {
   assert.ok(isEmpty(instance._base));
   assert.ok(instance._url == null);
   assert.ok(instance._key == null);
+  assert.ok(instance._identifier == null);
 });
 
 QUnit.test( "Track function is preparing payload and trying to send request", function( assert ) {

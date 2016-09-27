@@ -7,6 +7,7 @@ var Epic = {
       * Project variables
       **/
       _key: null,
+      _identifier: null,
       _url: null,
       _base: {},
       
@@ -22,11 +23,22 @@ var Epic = {
           content: {
             base: this._base,
             properties: properties,
-            name: eventName
+            name: eventName,
+            identifier: this._identifier
           }
           
         }
         this._sendRequest(new XMLHttpRequest(),payload);
+      },
+      
+      /**
+      * Set custom identifier for user instead of GUID
+      *
+      * @param {String} identifier
+      **/
+      identify: function(identifier){
+        this._identifier = identifier;
+        localStorage.setItem('epictic-user-identifier', identifier);
       },
       
       /**
@@ -45,6 +57,7 @@ var Epic = {
         this._base = { };
         this._key = null;
         this._url = null;
+        this._identifier = null;
       },
       
       /**
@@ -70,7 +83,44 @@ var Epic = {
         for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
         for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
         return obj3;
+      },
+      
+      /**
+      * Retrieve GUID
+      *
+      * @return {Object} GUID
+      **/
+      _getGUID: function() {
+        if(localStorage.getItem('epictic-user-identifier') != null){
+          return localStorage.getItem('epictic-user-identifier');
+        } else {
+          var guid = this._generateGUID();
+          localStorage.setItem('epictic-user-identifier', guid);
+          return guid;
+        }
+      },
+      
+      /**
+      * Generate GUID for user
+      *
+      * @return {Object} GUID
+      **/
+      _generateGUID: function() {
+        return this._random4Characters() + this._random4Characters() + '-' + this._random4Characters() + '-' + this._random4Characters() + '-' +
+          this._random4Characters() + '-' + this._random4Characters() + this._random4Characters() + this._random4Characters();
+      },
+
+      /**
+      * Generate 4 random alpha numeric characters
+      *
+      * @return {Object} RandomString
+      **/
+      _random4Characters: function() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
       }
+
     },
     
     /**
@@ -87,6 +137,7 @@ var Epic = {
       }
       this._lib._url = url;
       this._lib._key = key;
+      this._lib._identifier = this._lib._getGUID();
       return this._lib;
     },
     
@@ -104,6 +155,7 @@ var Epic = {
       }
       this._lib._url = url;
       this._lib._key = key;
+      this._lib._identifier = this._lib._getGUID();
       this._shared = this._lib;
       return this._shared
     },
